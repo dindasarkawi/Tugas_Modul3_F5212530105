@@ -31,8 +31,34 @@ class BukuView(ctk.CTk):
         self.entry_tahun.pack(pady=10, padx=15, fill="x")
 
         # Tombol Aksi
-        self.btn_simpan = ctk.CTkButton(self.frame_kiri, text="Simpan Data", fg_color="green")
-        self.btn_simpan.pack(pady=20, padx=15, fill="x")
+        self.btn_simpan = ctk.CTkButton(
+            self.frame_kiri,
+            text="Simpan Data",
+            fg_color="green"
+        )
+        self.btn_simpan.pack(
+            pady=10, padx=15, fill="x"
+        )
+
+        # Tombol Perbarui Data (Update)
+        self.btn_update = ctk.CTkButton(
+            self.frame_kiri,
+            text="Perbarui Data (Update)",
+            fg_color="blue"
+        )
+        self.btn_update.pack(
+            pady=10, padx=15, fill="x"
+        )
+
+        # Tombol Hapus Data (Delete)
+        self.btn_hapus = ctk.CTkButton(
+            self.frame_kiri,
+            text="Hapus Data (Delete)",
+            fg_color="red"
+        )
+        self.btn_hapus.pack(
+            pady=10, padx=15, fill="x"
+        )
 
         # ==========================================
         # FRAME KANAN: TABEL DAFTAR BUKU
@@ -40,7 +66,7 @@ class BukuView(ctk.CTk):
         self.frame_kanan = ctk.CTkFrame(self)
         self.frame_kanan.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-        ctk.CTkLabel(self.frame_kanan, text="Daftar Koleksi Buku", font=("Arial", 16, "bold")).pack(pady=15)
+        ctk.CTkLabel(self.frame_kanan, text="Daftar Koleksi Buku Dinda Aulia_F5212530105", font=("Arial", 16, "bold")).pack(pady=15)
 
         # Komponen Tabel (Treeview dari tkinter standar)
         kolom = ("id", "judul", "penulis", "tahun")
