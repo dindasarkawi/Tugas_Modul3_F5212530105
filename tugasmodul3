@@ -1,0 +1,13 @@
+print("=== Cek Status Kelulusan ===")
+
+nama_mahasiswa = input("Masukkan nama mahasiswa: ")
+nilai_ujian = float(input("Masukkan nilai ujian: "))
+
+print("Status: Pemrosesan Data Berhasil!")
+
+if nilai_ujian >= 60:
+    status_kelulusan = "Lulus"
+else:
+    status_kelulusan = "Tidak Lulus"
+
+print(f"Mahasiswa {nama_mahasiswa} dinyatakan: {status_kelulusan}")
