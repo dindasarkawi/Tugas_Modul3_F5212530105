@@ -20,7 +20,7 @@ Tugas_Modul3/
 ## Panduan Instalasi & Konfigurasi Database MySQL
 1. Pastikan aplikasi **Laragon** sudah terinstal di komputer Anda.
 2. Buka Laragon dan klik tombol **Start All** untuk menyalakan layanan **MySQL**.
-3. Buat database baru melalui phpMyAdmin atau terminal MySQL dengan nama: `db_perpustakaan`.
+3. Buat database baru melalui phpMyAdmin atau terminal MySQL dengan nama: `perpustakaan`.
 4. Clone atau unduh repositori ini ke komputer lokal Anda.
 5. Buka terminal (PowerShell/CMD) di dalam folder proyek, lalu buat dan aktifkan *virtual environment*:
 ```powershell
