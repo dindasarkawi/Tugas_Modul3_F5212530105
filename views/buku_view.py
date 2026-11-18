@@ -2,14 +2,16 @@ import customtkinter as ctk
 from tkinter import ttk
 
 class BukuView(ctk.CTk):
-    def __init__(self):
+    def __init__(self, role="admin", on_logout=None):
         super().__init__()
-        self.title("Sistem Manajemen Perpustakaan")
-        self.geometry("800x450")
+        self.role = role              # "admin" atau "anggota"
+        self.on_logout = on_logout    # fungsi untuk membuka kembali LoginView
 
-        # Konfigurasi Grid Utama (1 Baris, 2 Kolom)
-        self.grid_columnconfigure(0, weight=1) # Kolom Kiri (Form)
-        self.grid_columnconfigure(1, weight=2) # Kolom Kanan (Tabel lebih lebar)
+        self.title(f"Sistem Manajemen Perpustakaan - Mode: {self.role.upper()}")
+        self.geometry("800x520")
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=2)
         self.grid_rowconfigure(0, weight=1)
 
         # ==========================================
@@ -20,7 +22,6 @@ class BukuView(ctk.CTk):
 
         ctk.CTkLabel(self.frame_kiri, text="Form Data Buku", font=("Arial", 16, "bold")).pack(pady=15)
 
-        # Komponen Input
         self.entry_judul = ctk.CTkEntry(self.frame_kiri, placeholder_text="Masukkan Judul Buku")
         self.entry_judul.pack(pady=10, padx=15, fill="x")
 
@@ -30,35 +31,24 @@ class BukuView(ctk.CTk):
         self.entry_tahun = ctk.CTkEntry(self.frame_kiri, placeholder_text="Tahun Terbit (Misal: 2024)")
         self.entry_tahun.pack(pady=10, padx=15, fill="x")
 
-        # Tombol Aksi
-        self.btn_simpan = ctk.CTkButton(
-            self.frame_kiri,
-            text="Simpan Data",
-            fg_color="green"
-        )
-        self.btn_simpan.pack(
-            pady=10, padx=15, fill="x"
-        )
+        self.btn_simpan = ctk.CTkButton(self.frame_kiri, text="Simpan Data", fg_color="green")
+        self.btn_simpan.pack(pady=10, padx=15, fill="x")
 
-        # Tombol Perbarui Data (Update)
-        self.btn_update = ctk.CTkButton(
-            self.frame_kiri,
-            text="Perbarui Data (Update)",
-            fg_color="blue"
-        )
-        self.btn_update.pack(
-            pady=10, padx=15, fill="x"
-        )
+        self.btn_update = ctk.CTkButton(self.frame_kiri, text="Perbarui Data (Update)", fg_color="blue")
+        self.btn_update.pack(pady=10, padx=15, fill="x")
 
-        # Tombol Hapus Data (Delete)
-        self.btn_hapus = ctk.CTkButton(
+        self.btn_hapus = ctk.CTkButton(self.frame_kiri, text="Hapus Data (Delete)", fg_color="red")
+        self.btn_hapus.pack(pady=10, padx=15, fill="x")
+
+        # Tombol Logout (aktif untuk semua role)
+        self.btn_logout = ctk.CTkButton(
             self.frame_kiri,
-            text="Hapus Data (Delete)",
-            fg_color="red"
+            text="Logout",
+            fg_color="gray30",
+            hover_color="gray20",
+            command=self.logout
         )
-        self.btn_hapus.pack(
-            pady=10, padx=15, fill="x"
-        )
+        self.btn_logout.pack(side="bottom", pady=15, padx=15, fill="x")
 
         # ==========================================
         # FRAME KANAN: TABEL DAFTAR BUKU
@@ -66,19 +56,17 @@ class BukuView(ctk.CTk):
         self.frame_kanan = ctk.CTkFrame(self)
         self.frame_kanan.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
-        ctk.CTkLabel(self.frame_kanan, text="Daftar Koleksi Buku Dinda Aulia_F5212530105", font=("Arial", 16, "bold")).pack(pady=15)
+        ctk.CTkLabel(self.frame_kanan, text="Daftar Koleksi Buku Dinda Aulia_F5212530105",
+                     font=("Arial", 16, "bold")).pack(pady=15)
 
-        # Komponen Tabel (Treeview dari tkinter standar)
         kolom = ("id", "judul", "penulis", "tahun")
         self.tabel = ttk.Treeview(self.frame_kanan, columns=kolom, show="headings", height=15)
 
-        # Konfigurasi Header Tabel
         self.tabel.heading("id", text="ID")
         self.tabel.heading("judul", text="Judul Buku")
         self.tabel.heading("penulis", text="Penulis")
         self.tabel.heading("tahun", text="Tahun")
 
-        # Konfigurasi Lebar Kolom
         self.tabel.column("id", width=40, anchor="center")
         self.tabel.column("judul", width=150)
         self.tabel.column("penulis", width=120)
@@ -86,8 +74,37 @@ class BukuView(ctk.CTk):
 
         self.tabel.pack(fill="both", expand=True, padx=15, pady=10)
 
+        self.terapkan_hak_akses(self.role)
 
-# Blok eksekusi untuk menguji tampilan grafis
+    # ==========================================
+    # OTORISASI: hanya anggota yang dikunci, admin dibiarkan default (aktif semua)
+    # ==========================================
+    def terapkan_hak_akses(self, role):
+        self.role = role
+        self.title(f"Sistem Manajemen Perpustakaan - Mode: {role.upper()}")
+
+        if role == "anggota":
+            for entry in (self.entry_judul, self.entry_penulis, self.entry_tahun):
+                entry.configure(state="disabled")
+
+            self.btn_simpan.configure(text="Akses Terkunci (khusus admin)", state="disabled")
+            self.btn_update.configure(state="disabled")
+            self.btn_hapus.configure(state="disabled")
+
+    # ==========================================
+    # LOGOUT
+    # ==========================================
+    def logout(self):
+        self.withdraw()
+        self.after(100, self._selesai_logout)
+
+    def _selesai_logout(self):
+        callback = self.on_logout
+        self.destroy()
+        if callback:
+            callback()
+
+
 if __name__ == "__main__":
-    app = BukuView()
+    app = BukuView(role="admin")
     app.mainloop()
